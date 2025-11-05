@@ -3,6 +3,13 @@
 //#include <unistd.h>      
 //#include <fcntl.h>       
 
+struct mem_header {
+  struct mem_header* next;
+  int size;
+  int free; // 1 for avaibable, either 0
+};
+
+
 void* kernmem(int size) {
       if(size > 0) {
           void* memory = mmap(
@@ -18,9 +25,25 @@ void* kernmem(int size) {
     }
 }
 
+void initmem(void* mem) {
+  struct mem_header* header = (struct mem_header*)mem;  
+  header->next = NULL;
+  header->size = 4096 * 4;  
+  header->free = 1;
+  printf("Mem ready\n");  
+}
+
+// size in bytes
+void* memalloc(void* size, void* heap) {
+   void* mem = (char*)size + heap;
+   printf("mem adres: %p", mem);
+}
+
 int main() {
     void* memory = kernmem(4096 * 4); // 16 kb
-    printf("%p", memory);
+    initmem(memory);
+    memalloc(10, memory);
+    
     return 0;
 }
 
