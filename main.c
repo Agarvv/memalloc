@@ -35,7 +35,8 @@ void initmem(void* mem) {
 
 // size in bytes
 void* memalloc(void* size, void* heap) {
-   void* mem = (char*)size + heap;
+    struct mem_header* header = (struct mem_header*)heap;
+    void* mem = (char*)heap + sizeof(struct mem_header);
    printf("mem adres: %p", mem);
 }
 
